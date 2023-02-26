@@ -38,7 +38,11 @@
             }
             axios.post('http://localhost:3000/login',obj)
             .then(response=>{
-                document.getElementById("message").innerText=response.data;
+                if(response.data.status==='logged'){
+                    console.log(response.data);
+                document.getElementById("message").innerText=response.data.status;
+                window.location.href="../frontend/homepage.html";
+                }
             })
             .catch(err=>{
                 document.getElementById('error').innerText=err;
