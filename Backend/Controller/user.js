@@ -1,12 +1,13 @@
-const user=require('../Models/userdata');
-const userdata=require('../Models/userdata')
+const user=require('../Models/user');
 const bcrypt=require('bcrypt');
+const jwt=require('jsonwebtoken');
+
 
 const login=function(req,res,next){
     const email=req.body.email;
     const password=req.body.password;
 
-    userdata.findAll({
+    user.findAll({
         where:{
             email:email
         }
@@ -15,8 +16,7 @@ const login=function(req,res,next){
         if(data){
             bcrypt.compare(password,data[0].password,(err,result)=>{
                 if(result){
-                    console.log("abcdf");
-                    return res.send({status:"logged"})
+                    return res.send({status:"logged",token:generateAccessToken(data[0].id,data[0].name,data[0].ispremium)})
                 }else{
                     return res.send("password incorrect");
                 }
@@ -33,7 +33,7 @@ const register=function(req,res,next){
     const name=req.body.name;
     const email=req.body.email;
     const password=req.body.password
-    userdata.findAll({
+    user.findAll({
         where:{
             email:email
         }
@@ -59,6 +59,10 @@ const register=function(req,res,next){
         })
     }
 })
+}
+
+function generateAccessToken(id,name,ispremium){
+    return jwt.sign({userId:id,name:name,ispremium:ispremium},'secretkey');
 }
     
 

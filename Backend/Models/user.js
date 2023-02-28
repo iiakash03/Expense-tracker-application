@@ -11,14 +11,16 @@ const data=sequelize.define('user',{
     name:Sequelize.STRING,
     email:{
         type:Sequelize.STRING,
-        unique:true,
+        
         allowNull:false
     },
     password:{
         type:Sequelize.STRING,
-        unique:true,
+        
         allowNull:false
-    }
+    },
+    ispremium:Sequelize.BOOLEAN,
+    total_expense:Sequelize.INTEGER
 })
 
 module.exports=data;

@@ -40,6 +40,8 @@
             .then(response=>{
                 if(response.data.status==='logged'){
                     console.log(response.data);
+                    
+                    localStorage.setItem('token',response.data.token);
                 document.getElementById("message").innerText=response.data.status;
                 window.location.href="../frontend/homepage.html";
                 }
