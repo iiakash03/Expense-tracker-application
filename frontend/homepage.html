@@ -61,7 +61,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-        let flag=false;
+        const token1=localStorage.getItem('token');
     function submitForm(e) {
         event.preventDefault();
 
@@ -76,8 +76,10 @@
         const token=localStorage.getItem('token');
         axios.post("http://localhost:3000/expense/add-expense",obj,{headers:{Authorization:token}})
             .then((response) => {
-                if(response.data==='OK'){
-                        showContentonScreen(response);
+                console.log(response.statusText)
+                if(response.statusText==='OK'){
+                    console.log(response);
+                        showContentonScreen(response.data);
                 }
             })
             .catch((err) => {
@@ -86,7 +88,6 @@
     }
 
         function showContentonScreen(object) {
-            console.log(object.id);
             document.getElementById('pn').value = '';
             document.getElementById('ea').value = '';
 
@@ -131,7 +132,7 @@
         }
 
         function deleteUser(id) {
-            axios.delete(`http://localhost:3000/expense/delete-expense/${id}`)
+            axios.delete(`http://localhost:3000/expense/delete-expense/${id}`,{ headers: { "Authorization": token1 } })
                 .then(() => {
                     deleteFromScreen(id);
                 })

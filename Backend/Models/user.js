@@ -20,7 +20,10 @@ const data=sequelize.define('user',{
         allowNull:false
     },
     ispremium:Sequelize.BOOLEAN,
-    total_expense:Sequelize.INTEGER
+    total_expense:{
+    type:Sequelize.INTEGER,
+    dataValue:0
+    }
 })
 
 module.exports=data;

@@ -1,8 +1,10 @@
 const { response } = require('express');
 const expense=require('../Models/expense');
 const user=require('../Models/user');
+const sequelize=require('../util/database');
 
 const addExpense=async (req,res,next)=>{
+    const t=await sequelize.transaction();
 
     const price=req.body.price
     const description=req.body.description
@@ -15,26 +17,29 @@ const addExpense=async (req,res,next)=>{
         }
 
     })
-    console.log(typeof (totalprice[0].dataValues.total_expense))
     const updatedPrice=+totalprice[0].dataValues.total_expense+ +price;
-    console.log(updatedPrice);
 
     user.update(
         {total_expense:updatedPrice},
-        {where:{id:req.user.id}}
+        {where:{id:req.user.id}},
+        {transaction:t}
     )
 
     expense.create({
         price:price,
         category:category,
         description:description,
-        userId:req.user.id,   
-    })
+        userId:req.user.id},
+        {transaction:t}   
+    )
     .then((response)=>{
-        res.send('OK');
+        console.log('responseeeded',response);
+        res.json(response)
+        t.commit();
     })
     .catch(err=>{
-        res.send(err);
+        t.rollback();
+        console.log(err); 
     })
 }
 
@@ -51,17 +56,54 @@ const getExpenses=(req,res,next)=>{
     })
 }
 
-const deleteExpense=(req,res,next)=>{
+const deleteExpense=async (req,res,next)=>{
+    const t=await sequelize.transaction();
+
+ try{
     const id=req.params.userId;
-    console.log(id);
-    expense.destroy({
+
+    const amount=await user.findAll({
+        attributes:['total_expense'],
+        where:{
+            id:req.user.id
+        }
+    },
+    {transaction:t}
+    
+    )
+
+    const currentamount=await expense.findAll({
+        attributes:['price'],
+        where:{
+            id:id,
+        }
+
+    },
+    {transaction:t}
+    )
+
+    const updatedprice=amount[0].total_expense-currentamount[0].price;
+
+    await user.update(
+        {total_expense:updatedprice},
+        {where:{id:req.user.id}},
+    )
+
+    
+    const result=await expense.destroy({
         where:{
             id:id
-        }
-    })
-    .then(response=>{
+        },
+    },
+    )
         res.send("deleted");
-    })
+        t.commit();
+        
+}
+catch(err){
+    console.log(err);
+    t.rollback()
+}
 }
 
 module.exports={
