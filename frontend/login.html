@@ -16,7 +16,9 @@
                     <label class="form-label">password</label>
                     <input type="password" id="password"><br>
                     <input type="submit" id="button">
+                    
                 </form>
+                <button onclick="location.href='../frontend/forgotpassword.html'" id="fp">forgot password</button>
             </div>
         </div>
         <div class="row">
@@ -40,7 +42,7 @@
             .then(response=>{
                 if(response.data.status==='logged'){
                     console.log(response.data);
-                    
+
                     localStorage.setItem('token',response.data.token);
                 document.getElementById("message").innerText=response.data.status;
                 window.location.href="../frontend/homepage.html";

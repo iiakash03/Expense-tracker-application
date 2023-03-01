@@ -4,13 +4,14 @@ const User=require('./Backend/Models/user');
 const Expense=require('./Backend/Models/expense');
 const Order=require('./Backend/Models/order');
 
+
 const premiumRoutes=require('./Backend/Routes/premium')
+const passwordRoutes=require('./Backend/Routes/password')
 
 const bodyParser=require('body-parser')
 const sequelize=require('./Backend/util/database');
 const userRoutes=require('./Backend/Routes/user')
 const cors=require('cors')
-const bcrypt=require('bcrypt');
 
 const expenseRoutes=require('./Backend/Routes/expense')
 
@@ -20,6 +21,7 @@ app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json());
 app.use('/expense',expenseRoutes);
 app.use('/premium',premiumRoutes);
+app.use('/password',passwordRoutes);
 app.use(userRoutes);
 
 User.hasMany(Expense);
