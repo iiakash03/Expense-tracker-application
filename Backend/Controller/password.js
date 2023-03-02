@@ -66,7 +66,9 @@ const forgotpassword = async (req, res, next) => {
 const passwordreset = async (req, res, next) => {
     const id = req.params.id;
     const resetpassword = await forgotPasswordRequest.findOne({ where: { id } })
+    console.log(resetpassword.isactive)
     if (resetpassword) {
+        if(resetpassword.isactive===true){
         resetpassword.update({ isactive: false });
         res.status(200).send(`<html>
                                     <script>
@@ -83,6 +85,10 @@ const passwordreset = async (req, res, next) => {
                                 </html>`
         )
         res.end()
+                                    }else{
+                                        return res.send("Link expired");
+                                    }
+                                    
     }
 }
 
