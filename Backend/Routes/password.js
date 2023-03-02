@@ -4,6 +4,10 @@ const router=express.Router();
 
 const passwordController=require('../Controller/password');
 
-router.post('/forgotpassword',passwordController.forgotpassword)
+router.get('/updatepassword/:resetpasswordid', passwordController.updatepassword)
+
+router.get('/resetpassword/:id', passwordController.passwordreset)
+
+router.use('/forgotpassword',passwordController.forgotpassword)
 
 module.exports=router

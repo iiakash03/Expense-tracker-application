@@ -3,6 +3,7 @@ const app=express();
 const User=require('./Backend/Models/user');
 const Expense=require('./Backend/Models/expense');
 const Order=require('./Backend/Models/order');
+const forgotpassword=require('./Backend/Models/forgotPasswordRequest');
 
 
 const premiumRoutes=require('./Backend/Routes/premium')
@@ -29,6 +30,9 @@ Expense.belongsTo(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(forgotpassword);
+forgotpassword.belongsTo(User)
 
 
 //app.use('/register',userController)
