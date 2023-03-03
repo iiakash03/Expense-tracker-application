@@ -46,6 +46,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th scope="col">Date</th>
                         <th scope="col">Expense Name</th>
                         <th scope="col">Description</th>
                         <th scope="col">Price</th>
@@ -61,7 +62,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-        const token1=localStorage.getItem('token');
+    const token1=localStorage.getItem('token');
     function submitForm(e) {
         event.preventDefault();
 
@@ -91,7 +92,7 @@
             document.getElementById('pn').value = '';
             document.getElementById('ea').value = '';
 
-            const childHTML = `<tr id="${object.id}"><td>${object.expense}</td><td>${object.description}</td><td>${object.price}</td><td><button class="btn btn-danger" onclick=deleteUser('${object.id}')> delete </button>
+            const childHTML = `<tr id="${object.id}"><td>${object.createdAt}</td><td>${object.expense}</td><td>${object.description}</td><td>${object.price}</td><td><button class="btn btn-danger" onclick=deleteUser('${object.id}')> delete </button>
             <button class="btn btn-primary" onclick=getUpdateUser('${object.id}')>Update</button></td></tr>`
             parentNode = document.getElementById("ul");
             parentNode.innerHTML = parentNode.innerHTML + childHTML;
