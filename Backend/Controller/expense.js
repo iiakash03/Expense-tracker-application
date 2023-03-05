@@ -2,6 +2,62 @@ const { response } = require('express');
 const expense=require('../Models/expense');
 const user=require('../Models/user');
 const sequelize=require('../util/database');
+const AWS=require('aws-sdk');
+
+
+
+function uploadTos3(data,filename){
+    try{
+    const BUCKET_NAME='expensesofusers';
+    const IAM_USER_KEY='AKIA3QEOPLEUJ33O3E67'
+    const IAM_USER_SECRET='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'
+
+    let s3bucket=new AWS.S3({
+        accessKeyId:IAM_USER_KEY,
+        secretAccessKey:IAM_USER_SECRET,
+    })
+
+        var params={
+            Bucket:BUCKET_NAME,
+            Key:filename,
+            Body:data,
+            ACL:'public-read'
+        }
+        return new Promise((resolve,reject)=>{
+        s3bucket.upload(params,(err,s3response)=>{
+            console.log(err);
+            if(err){
+                //reject(console.log('errrrrrr',err))
+            }else{
+                //console.log('success',s3response);
+                resolve(s3response.Location)
+
+            }
+        }) 
+    }) 
+}catch(err){
+    console.log(err);
+}  
+
+}
+
+
+
+
+const download=async(req,res,next)=>{
+    try{
+    const expenses=await req.user.getExpenses();
+    
+    const stringifyExpenses=JSON.stringify(expenses)
+    const userID=req.user.id;
+    const filename=`Expenses${userID}/${new Date()}.txt`;
+    const fileUrl=await uploadTos3(stringifyExpenses,filename);
+    console.log(fileUrl);
+    res.json({status:201,fileUrl,success:true})
+    }catch(err){
+        console.log(err);
+    }
+}
 
 const addExpense=async (req,res,next)=>{
     const t=await sequelize.transaction();
@@ -109,5 +165,6 @@ catch(err){
 module.exports={
     addExpense,
     getExpenses,
-    deleteExpense
+    deleteExpense,
+    download
 }

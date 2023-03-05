@@ -148,13 +148,38 @@
         }
 
 
+    function download(){
+        try{
+    axios.get('http://localhost:3000/download', { headers: {"Authorization" : token} })
+    .then((response) => {
+        if(response.data.status === 201){          
+            var a = document.createElement("a");
+            a.href = response.data.fileUrl;
+            a.download = 'myexpense.csv';
+            a.click();
+        } else {
+            throw new Error(response.data.message)
+        }
+
+    })
+    .catch((err) => {
+        console.log(err)
+    });
+}catch(err){
+    console.log(err);
+
+}
+}
+
+
+
         window.addEventListener("DOMContentLoaded",()=>{
             const token=localStorage.getItem("token");
             const details=parseJwt(token);
             if(details.ispremium===true){
                 document.getElementById('buypremium').style.visibility = 'hidden';
                     document.getElementById('bp').innerText = 'you are now an premium user'
-                    const childHtml='<button id="leaderboard" onclick=showLeaderBoard()>Show LeaderBoard</button>'
+                    const childHtml='<button id="leaderboard" onclick=showLeaderBoard()>Show LeaderBoard</button><button onclick="download()" id="downloadexpense">Download File</button>'
                     document.getElementById('bp').innerHTML=childHtml;
             }
             axios.get('http://localhost:3000/expense/getexpenses',{headers:{Authorization:token}})
