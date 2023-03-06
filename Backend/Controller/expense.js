@@ -100,16 +100,42 @@ const addExpense=async (req,res,next)=>{
 }
 
 
-const getExpenses=(req,res,next)=>{
+const getExpenses=async (req,res,next)=>{
+    let page=req.query.page || 1;
 
-    expense.findAll({
+    const ITEMS_PER_PAGE=3;
+
+    const count=await expense.count({
         where:{
             userId:req.user.id
         }
     })
-    .then(data=>{
-        res.send(data);
+
+    console.log(count/ITEMS_PER_PAGE);
+
+    if(page==='last'){
+        page=Math.floor(count/ITEMS_PER_PAGE)+1;
+    }
+    //console.log('bwhjdv3e3ydgriyg4r',count);
+    let totalItems;
+
+
+    const expenses=await expense.findAll({
+        offset:(page-1)*ITEMS_PER_PAGE,
+        limit:ITEMS_PER_PAGE,
     })
+    console.log(expenses);
+
+    res.json({
+        expenses:expenses,
+        currentPage:page,
+        hasNextPage:ITEMS_PER_PAGE*page<count,
+        nextPage:+page + +1,
+        hasPreviousPage:page>1,
+        previousPage:page-1,
+        lastPage:Math.ceil(totalItems/ITEMS_PER_PAGE),
+    })
+    
 }
 
 const deleteExpense=async (req,res,next)=>{
