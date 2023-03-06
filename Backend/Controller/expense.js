@@ -103,7 +103,7 @@ const addExpense=async (req,res,next)=>{
 const getExpenses=async (req,res,next)=>{
     let page=req.query.page || 1;
 
-    const ITEMS_PER_PAGE=3;
+    const ITEMS_PER_PAGE=req.query.rows || 3;
 
     const count=await expense.count({
         where:{
@@ -111,7 +111,7 @@ const getExpenses=async (req,res,next)=>{
         }
     })
 
-    console.log(count/ITEMS_PER_PAGE);
+    //console.log(count/ITEMS_PER_PAGE);
 
     if(page==='last'){
         page=Math.floor(count/ITEMS_PER_PAGE)+1;
@@ -122,7 +122,7 @@ const getExpenses=async (req,res,next)=>{
 
     const expenses=await expense.findAll({
         offset:(page-1)*ITEMS_PER_PAGE,
-        limit:ITEMS_PER_PAGE,
+        limit:ITEMS_PER_PAGE<count ?ITEMS_PER_PAGE:count,
     })
     console.log(expenses);
 
