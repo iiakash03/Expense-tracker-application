@@ -10,6 +10,7 @@ require('dotenv').config();
 const forgotpassword = async (req, res, next) => {
     const t = await sequelize.transaction();
     const email1 = req.body.email;
+    console.log(email1)
     const user = await User.findAll({
         where: { email: email1 }
     })
@@ -35,7 +36,7 @@ const forgotpassword = async (req, res, next) => {
         var transEmailApi = new Sib.TransactionalEmailsApi();
 
         const sender = {
-            email: 'aaku1835@gmail.com'
+            email: process.env.MAIL
         }
 
         const recievers = [
@@ -53,6 +54,7 @@ const forgotpassword = async (req, res, next) => {
             htmlContent: `<a href="http://localhost:3000/password/resetpassword/${id}">Reset password</a>`,
         })
         t.commit();
+        res.send("done");
     }
     else {
         return res.send("user does not exist");
@@ -65,6 +67,7 @@ const forgotpassword = async (req, res, next) => {
 
 const passwordreset = async (req, res, next) => {
     const id = req.params.id;
+    console.log(id)
     const resetpassword = await forgotPasswordRequest.findOne({ where: { id } })
     console.log(resetpassword.isactive)
     if (resetpassword) {
