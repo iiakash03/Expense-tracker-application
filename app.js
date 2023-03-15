@@ -7,8 +7,6 @@ const forgotpassword=require('./Backend/Models/forgotPasswordRequest');
 const path=require('path')
 const https=require('https');
 
-
-
 const premiumRoutes=require('./Backend/Routes/premium')
 const passwordRoutes=require('./Backend/Routes/password')
 
@@ -25,14 +23,15 @@ const expenseRoutes=require('./Backend/Routes/expense')
 
 app.use(cors());
 
-const privateKey=fs.readFileSync('server.key')
-const certificate=fs.readFileSync('server.cert')
-
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json());
 app.use('/expense',expenseRoutes);
 app.use('/premium',premiumRoutes);
 app.use('/password',passwordRoutes);
+
+app.use((req,res)=>{
+    res.sendFile(path.join(__dirname, `public/${req.url}`))
+})
 
 const accessLogStream=fs.createReadStream(path.join(__dirname,'access.log'),
 {flags:'a'}
