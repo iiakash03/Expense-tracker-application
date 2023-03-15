@@ -28,6 +28,7 @@ app.use(bodyParser.json());
 app.use('/expense',expenseRoutes);
 app.use('/premium',premiumRoutes);
 app.use('/password',passwordRoutes);
+app.use(userRoutes);
 
 app.use((req,res)=>{
     res.sendFile(path.join(__dirname, `Backend/public/${req.url}`))
@@ -36,10 +37,9 @@ app.use((req,res)=>{
 const accessLogStream=fs.createReadStream(path.join(__dirname,'access.log'),
 {flags:'a'}
 );
-app.use(userRoutes);
+
 app.use(helmet());
 app.use(compression());
-app.use(morgan('combined',{stream:accessLogStream}));
 
 User.hasMany(Expense);
 Expense.belongsTo(User);
