@@ -30,7 +30,7 @@ app.use('/premium',premiumRoutes);
 app.use('/password',passwordRoutes);
 
 app.use((req,res)=>{
-    res.sendFile(path.join(__dirname, `public/${req.url}`))
+    res.sendFile(path.join(__dirname, `Backend/public/${req.url}`))
 })
 
 const accessLogStream=fs.createReadStream(path.join(__dirname,'access.log'),
