@@ -2,7 +2,7 @@ const User = require('../Models/user')
 const uuid = require('uuid');
 const forgotPasswordRequest = require('../Models/forgotPasswordRequest')
 const sequelize = require('../util/database')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 
 
@@ -51,7 +51,7 @@ const forgotpassword = async (req, res, next) => {
             to: recievers,
             subject: 'password reset link',
             textContent: 'click here to reset password',
-            htmlContent: `<a href="http://localhost:3000/password/resetpassword/${id}">Reset password</a>`,
+            htmlContent: `<a href="http://3.139.69.145:3000/password/resetpassword/${id}">Reset password</a>`,
         })
         t.commit();
         res.send("done");

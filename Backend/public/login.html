@@ -61,7 +61,7 @@
                 password:document.getElementById('password').value
 
             }
-            axios.post('http://3.139.69.145:3000/login',obj)
+            axios.post('http://3.139.69.145:3000/user/login',obj)
             .then(response=>{
                 if(response.data.status==='logged'){
                     console.log(response.data);

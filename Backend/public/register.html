@@ -59,7 +59,7 @@
             email:document.getElementById('email').value,
             password:document.getElementById('password').value
             }
-            axios.post('http://3.139.69.145:3000/register',obj)
+            axios.post('http://3.139.69.145:3000/user/register',obj)
             .then((response=>{
                 document.getElementById('message').innerText=response.data;
                 console.log(response);
