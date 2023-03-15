@@ -69,6 +69,7 @@
                     localStorage.setItem('token',response.data.token);
                 document.getElementById("message").innerText=response.data.status;
                 window.location.href="../homepage.html";
+                
                 }
             })
             .catch(err=>{
