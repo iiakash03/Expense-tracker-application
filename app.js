@@ -28,7 +28,7 @@ app.use(bodyParser.json());
 app.use('/expense',expenseRoutes);
 app.use('/premium',premiumRoutes);
 app.use('/password',passwordRoutes);
-app.use(userRoutes);
+app.use('/user',userRoutes);
 
 app.use((req,res)=>{
     res.sendFile(path.join(__dirname, `Backend/public/${req.url}`))
