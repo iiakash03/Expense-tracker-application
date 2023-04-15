@@ -7,18 +7,41 @@
     <title>Document</title>
 </head>
 <body>
+    <nav style="background-color: black;">
+        <div class="container">
+            <div class="row">
+              <div class="col-sm">
+                <h4 style="color: white;">Home</h4>
+              </div>
+              <div class="col-sm">
+                <h4 ><a href="login.html" style="color: white;">Login</a></h4>
+              </div>
+              <div class="col-sm">
+                <h4 ><a href="register.html" style="color: white;">Register</a></h4>
+              </div>
+            </div>
+          </div>
+    </nav>
     <div class="container">
-        <div class="row">
-            <div class="column">
+        <div class="row" style="height: 100vh">
+            <div class="column" style="display: flex; align-items: center; justify-content: center;background-color: bisque;">
                 <form onsubmit="login()">
-                    <label class="form-label">Email</label>
-                    <input type="email" id="email"><br>
-                    <label class="form-label">password</label>
-                    <input type="password" id="password"><br>
+                    <div>
+                        <label class="form-label">Email</label><br>
+                        <input type="email" id="email"><br>
+                    </div>
+                    <div>
+                        <label class="form-label">password</label><br>
+                        <input type="password" id="password"><br>
+                    </div>
                     <input type="submit" id="button">
+                    <div>
+                        <button onclick="location.href='forgotpassword.html'" id="fp">forgot password</button>
+                    </div>
                     
                 </form>
-                <button onclick="location.href='../frontend/forgotpassword.html'" id="fp">forgot password</button>
+                
+                
             </div>
         </div>
         <div class="row">
@@ -38,7 +61,7 @@
                 password:document.getElementById('password').value
 
             }
-            axios.post('http://localhost:3000/login',obj)
+            axios.post('http://localhost:3000/user/login',obj)
             .then(response=>{
                 if(response.data.status==='logged'){
                     console.log(response.data);
@@ -46,6 +69,7 @@
                     localStorage.setItem('token',response.data.token);
                 document.getElementById("message").innerText=response.data.status;
                 window.location.href="../frontend/homepage.html";
+                
                 }
             })
             .catch(err=>{

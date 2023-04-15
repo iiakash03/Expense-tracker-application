@@ -1,4 +1,4 @@
-const user=require('../Models/user');
+const User=require('../Models/user');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 
@@ -7,16 +7,17 @@ const login=function(req,res,next){
     const email=req.body.email;
     const password=req.body.password;
 
-    user.findAll({
-        where:{
+    User.findOne(
+        {
             email:email
         }
-    })
+    )
     .then(data=>{
         if(data){
-            bcrypt.compare(password,data[0].password,(err,result)=>{
+            console.log(data)
+            bcrypt.compare(password,data.password,(err,result)=>{
                 if(result){
-                    return res.send({status:"logged",token:generateAccessToken(data[0].id,data[0].name,data[0].ispremium)})
+                    return res.send({status:"logged",token:generateAccessToken(data.id,data.name,data.ispremium)})
                 }else{
                     return res.send("password incorrect");
                 }
@@ -33,23 +34,24 @@ const register=function(req,res,next){
     const name=req.body.name;
     const email=req.body.email;
     const password=req.body.password
-    user.findAll({
-        where:{
+    User.find(
+        {
             email:email
         }
-    })
+    )
     .then(data=>{
         if(data.length>0){
             return res.send('user already exist');
         }else{
             bcrypt.hash(password,10,async(err,hash)=>{
                 console.log(err)
-            await user.create({
+                let user=new User({
                 name,
                 email,
                 password:hash,
-                ispremiumuser:false
-            })
+                ispremiumuser:false  
+                }) 
+            await user.save()
             .then(result=>{
                 res.json(result);
             })

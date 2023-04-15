@@ -8,6 +8,6 @@ router.post('/register',userController.register)
 
 router.post('/login',userController.login)
 
-router.get('/download',authenticate.authenticate,expenseController.download)
+// router.get('/download',authenticate.authenticate,expenseController.download)
 
 module.exports=router;

@@ -7,16 +7,37 @@
     <title>Document</title>
 </head>
 <body>
+    <nav style="background-color: black;">
+        <div class="container">
+            <div class="row">
+              <div class="col-sm">
+                <h4 style="color: white;">Home</h4>
+              </div>
+              <div class="col-sm">
+                <h4 ><a href="login.html" style="color: white;">Login</a></h4>
+              </div>
+              <div class="col-sm">
+                <h4 ><a href="register.html" style="color: white;">Register</a></h4>
+              </div>
+            </div>
+          </div>
+    </nav>
     <div class="container">
-        <div class="row">
-            <div class="col">
+        <div class="row" style="height: 100vh;">
+            <div class="col" style="display: flex; align-items: center; justify-content: center;background-color: bisque;" >
                 <form onsubmit="register()" >
-                    <label class="form-label">Name</label>
-                    <input type="text" id="name"><br>
-                    <label class="form-label">Email</label>
-                    <input type="email" id="email"><br>
-                    <label class="form-label">password</label>
-                    <input type="password" id="password"><br>
+                    <div>
+                        <label class="form-label">Name</label><br>
+                        <input type="text" id="name"><br>
+                    </div>
+                    <div>
+                        <label class="form-label">Email</label><br>
+                        <input type="email" id="email"><br>
+                    </div>
+                    <div>
+                        <label class="form-label">password</label><br>
+                        <input type="password" id="password"><br>
+                    </div>
                     <input type="submit" id="button">
                 </form>
             </div>
@@ -38,7 +59,7 @@
             email:document.getElementById('email').value,
             password:document.getElementById('password').value
             }
-            axios.post('http://localhost:3000/register',obj)
+            axios.post('http://localhost:3000/user/register',obj)
             .then((response=>{
                 document.getElementById('message').innerText=response.data;
                 console.log(response);
