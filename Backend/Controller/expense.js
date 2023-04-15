@@ -1,8 +1,8 @@
 const { response } = require('express');
-const expense=require('../Models/expense');
+const Expense=require('../Models/expense');
 const user=require('../Models/user');
-const sequelize=require('../util/database');
-const AWS=require('aws-sdk');
+//const sequelize=require('../util/database');
+//const AWS=require('aws-sdk');
 
 
 
@@ -60,41 +60,40 @@ const download=async(req,res,next)=>{
 }
 
 const addExpense=async (req,res,next)=>{
-    const t=await sequelize.transaction();
 
     const price=req.body.price
     const description=req.body.description
-    const category=req.body.category
+    const category=req.body.productname
 
-    const totalprice=await user.findAll({
+    const totalprice=await user.find({
         attributes:['total_expense'],
         where:{
             id:req.user.id
         }
 
     })
-    const updatedPrice=+totalprice[0].dataValues.total_expense+ +price;
+    // const updatedPrice=+totalprice[0].dataValues.total_expense+ +price;
 
-    user.update(
-        {total_expense:updatedPrice},
-        {where:{id:req.user.id}},
-        {transaction:t}
-    )
+    // user.update(
+    //     {total_expense:updatedPrice},
+    //     {where:{id:req.user.id}},
+    //     {transaction:t}
+    // )
 
-    expense.create({
+    let expense=new Expense({
         price:price,
         category:category,
         description:description,
-        userId:req.user.id},
-        {transaction:t}   
-    )
+        userId:req.user.id
+    })
+
+    expense.save()
     .then((response)=>{
         console.log('responseeeded',response);
         res.json(response)
-        t.commit();
     })
     .catch(err=>{
-        t.rollback();
+        
         console.log(err); 
     })
 }
@@ -106,10 +105,8 @@ const getExpenses=async (req,res,next)=>{
 
     const ITEMS_PER_PAGE=req.query.rows || 5;
 
-    const count=await expense.count({
-        where:{
+    const count=await Expense.count({
             userId:req.user.id
-        }
     })
 
     //console.log(count/ITEMS_PER_PAGE);
@@ -120,83 +117,96 @@ const getExpenses=async (req,res,next)=>{
     //console.log('bwhjdv3e3ydgriyg4r',count);
     let totalItems;
 
-    const expenses=await expense.findAll({
-        offset:(page-1)*ITEMS_PER_PAGE,
-        limit: +ITEMS_PER_PAGE,
-
-        where:{
+    const expenses=await Expense.find(
+        {
             userId:req.user.id
         }
-    })
+    )
     console.log(expenses);
+    res.send(expenses);
 
-    res.json({
-        expenses:expenses,
-        currentPage:page,
-        hasNextPage:ITEMS_PER_PAGE*page<count,
-        nextPage:+page + +1,
-        hasPreviousPage:page>1,
-        previousPage:page-1,
-        lastPage:Math.ceil(totalItems/ITEMS_PER_PAGE),
-    })
+    // res.json({
+    //     expenses:expenses,
+    //     currentPage:page,
+    //     hasNextPage:ITEMS_PER_PAGE*page<count,
+    //     nextPage:+page + +1,
+    //     hasPreviousPage:page>1,
+    //     previousPage:page-1,
+    //     lastPage:Math.ceil(totalItems/ITEMS_PER_PAGE),
+    // })
 }catch(err){
     console.log(err);
 }
     
 }
+
+
 const deleteExpense=async (req,res,next)=>{
-    const t=await sequelize.transaction();
 
  try{
     const id=req.params.userId;
 
-    const amount=await user.findAll({
-        attributes:['total_expense'],
-        where:{
-            id:req.user.id
-        }
-    },
-    {transaction:t}
-    
-    )
-
-    const currentamount=await expense.findAll({
-        attributes:['price'],
-        where:{
-            id:id,
-        }
-
-    },
-    {transaction:t}
-    )
-
-    const updatedprice=amount[0].total_expense-currentamount[0].price;
-
-    await user.update(
-        {total_expense:updatedprice},
-        {where:{id:req.user.id}},
-    )
+    // const amount=await user.findAll({
+    //     attributes:['total_expense'],
+    //     where:{
+    //         id:req.user.id
+    //     }
+    // },
 
     
-    const result=await expense.destroy({
-        where:{
-            id:id
-        },
-    },
-    )
+    // )
+
+    // const currentamount=await expense.findAll({
+    //     attributes:['price'],
+    //     where:{
+    //         id:id,
+    //     }
+
+    // },
+    // )
+
+    //const updatedprice=amount[0].total_expense-currentamount[0].price;
+
+    // await user.update(
+    //     {total_expense:updatedprice},
+    //     {where:{id:req.user.id}},
+    // )
+
+    
+    await Expense.deleteOne({ _id: id });
         res.send("deleted");
-        t.commit();
         
 }
 catch(err){
     console.log(err);
-    t.rollback()
 }
+}
+
+
+const updateExpense=async (req,res,next)=>{
+    try{
+        const id=req.params.userId;
+        console.log(id);
+        const resp=await Expense.findOne(
+            {
+                _id:id
+            }
+        
+        )
+        
+        res.send(resp);
+        
+
+    }catch(err){
+        console.log(err);
+    }
+
 }
 
 module.exports={
     addExpense,
     getExpenses,
     deleteExpense,
-    download
+    download,
+    updateExpense
 }

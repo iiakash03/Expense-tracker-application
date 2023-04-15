@@ -51,7 +51,7 @@ const forgotpassword = async (req, res, next) => {
             to: recievers,
             subject: 'password reset link',
             textContent: 'click here to reset password',
-            htmlContent: `<a href="http://3.139.69.145:3000/password/resetpassword/${id}">Reset password</a>`,
+            htmlContent: `<a href="http://localhost:3000/password/resetpassword/${id}">Reset password</a>`,
         })
         t.commit();
         res.send("done");
